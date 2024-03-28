@@ -1,0 +1,15 @@
+sudo: required
+services: 
+  - docker
+
+before_install:
+  - docker build -t bcmhughes/react-test -f ./client/Dockerfile.dev ./client
+
+script: 
+  - docker run -e CI=true bcmhughes/react-test npm test
+
+  after_success:
+    - docker build -t bcmhughes/multi-client ./client
+    - docker build -t bcmhughes/multi-nginx ./nginx
+    - docker build -t bcmhughes/multi-server ./server
+    - docker build -t bcmhughes/multi-worker ./worker
